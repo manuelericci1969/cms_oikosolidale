@@ -356,7 +356,9 @@
     @stack('scripts')
     <script defer src="{{ asset('assets/nav.js') }}"></script>
     <style id="smooth-reassert">@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth!important}}</style>
-    @include('crm::public.chatbot-widget')
+    @if((bool) setting('chatbot.enabled', false))
+        @include('crm::public.chatbot-widget')
+    @endif
     @include('partials.cookie-banner')
 </div>
 </body>
