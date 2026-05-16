@@ -1,7 +1,7 @@
 {{-- resources/views/auth/reset-password.blade.php --}}
 <x-guest-layout>
     <x-slot name="title">
-        Nuova password | {{ config('app.name', 'R4Software') }}
+        Nuova password | {{ config('app.name', 'Oikos Solidale') }}
     </x-slot>
 
     <div class="mb-4">
@@ -14,7 +14,7 @@
         </h2>
 
         <p class="text-muted mb-0">
-            Scegli una nuova password per accedere alla piattaforma.
+            Scegli una nuova password per accedere alla piattaforma Oikos Solidale.
         </p>
     </div>
 
