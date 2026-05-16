@@ -1,7 +1,7 @@
 {{-- resources/views/auth/register.blade.php --}}
 <x-guest-layout>
     <x-slot name="title">
-        Registrazione | {{ config('app.name', 'R4Software') }}
+        Registrazione | {{ config('app.name', 'Oikos Solidale') }}
     </x-slot>
 
     <div class="mb-4">
@@ -14,7 +14,7 @@
         </h2>
 
         <p class="text-muted mb-0">
-            Registrati per accedere ai servizi digitali R4Software.
+            Registrati per accedere ai servizi digitali e all’area riservata di Oikos Solidale.
         </p>
     </div>
 
