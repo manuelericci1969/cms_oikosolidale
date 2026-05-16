@@ -1,7 +1,7 @@
 {{-- resources/views/auth/login.blade.php --}}
 <x-guest-layout>
     <x-slot name="title">
-        Accesso | {{ config('app.name', 'R4Software') }}
+        Accesso | {{ config('app.name', 'Oikos Solidale') }}
     </x-slot>
 
     <div class="mb-4">
@@ -14,7 +14,7 @@
         </h2>
 
         <p class="text-muted mb-0">
-            Entra nel pannello R4Software per gestire sito, contenuti, clienti e strumenti operativi.
+            Entra nell’area riservata Oikos Solidale per gestire contenuti, servizi, attività formative e percorsi di accompagnamento.
         </p>
     </div>
 
