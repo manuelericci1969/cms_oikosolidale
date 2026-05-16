@@ -1,7 +1,7 @@
 {{-- resources/views/auth/confirm-password.blade.php --}}
 <x-guest-layout>
     <x-slot name="title">
-        Conferma password | {{ config('app.name', 'R4Software') }}
+        Conferma password | {{ config('app.name', 'Oikos Solidale') }}
     </x-slot>
 
     <div class="mb-4">
@@ -14,7 +14,7 @@
         </h2>
 
         <p class="text-muted mb-0">
-            Questa è un’area riservata. Conferma la password per continuare.
+            Questa è un’area riservata di Oikos Solidale. Conferma la password per continuare.
         </p>
     </div>
 
