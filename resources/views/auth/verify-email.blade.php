@@ -1,7 +1,7 @@
 {{-- resources/views/auth/verify-email.blade.php --}}
 <x-guest-layout>
     <x-slot name="title">
-        Verifica email | {{ config('app.name', 'R4Software') }}
+        Verifica email | {{ config('app.name', 'Oikos Solidale') }}
     </x-slot>
 
     <div class="mb-4">
