@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="robots" content="noindex,nofollow">
 
-    <title>{{ $title ?? config('app.name', 'R4Software') }}</title>
+    <title>{{ $title ?? config('app.name', 'Oikos Solidale') }}</title>
 
     @isset($head)
         {{ $head }}
@@ -23,11 +23,13 @@
 
     <style>
         :root {
-            --r4-primary: #0d6efd;
-            --r4-dark: #101828;
-            --r4-muted: #667085;
-            --r4-border: #e4e7ec;
-            --r4-bg: #f5f7fb;
+            --r4-primary: #466b45;
+            --r4-primary-dark: #2f4d32;
+            --r4-accent: #c58a3a;
+            --r4-dark: #243127;
+            --r4-muted: #667266;
+            --r4-border: #e6dccf;
+            --r4-bg: #fffaf1;
         }
 
         html,
@@ -39,8 +41,9 @@
             min-height: 100vh;
             font-family: "Figtree", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             background:
-                radial-gradient(circle at top left, rgba(13, 110, 253, .14), transparent 34%),
-                linear-gradient(135deg, #f7f9fc 0%, #eef3f9 100%);
+                radial-gradient(circle at top left, rgba(197, 138, 58, .18), transparent 34%),
+                radial-gradient(circle at bottom right, rgba(70, 107, 69, .16), transparent 36%),
+                linear-gradient(135deg, #fffaf1 0%, #f7efe2 52%, #eef4e9 100%);
             color: var(--r4-dark);
         }
 
@@ -64,7 +67,7 @@
 
         .auth-brand-panel {
             background:
-                linear-gradient(135deg, rgba(13, 110, 253, .96), rgba(9, 44, 88, .98)),
+                linear-gradient(135deg, rgba(70, 107, 69, .96), rgba(47, 77, 50, .98)),
                 url("data:image/svg+xml,%3Csvg width='120' height='120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='rgba(255,255,255,0.12)' stroke-width='1'%3E%3Cpath d='M0 60h120M60 0v120'/%3E%3Ccircle cx='60' cy='60' r='36'/%3E%3C/g%3E%3C/svg%3E");
             color: #fff;
             border-radius: 28px;
@@ -108,7 +111,7 @@
         .auth-card {
             border: 1px solid var(--r4-border);
             border-radius: 24px;
-            box-shadow: 0 24px 70px rgba(16, 24, 40, .10);
+            box-shadow: 0 24px 70px rgba(36, 49, 39, .10);
             background: rgba(255, 255, 255, .96);
             backdrop-filter: blur(10px);
         }
@@ -116,14 +119,14 @@
         .form-control,
         .form-select {
             border-radius: 12px;
-            border-color: #d0d5dd;
+            border-color: #d7cec0;
             padding: .72rem .9rem;
         }
 
         .form-control:focus,
         .form-select:focus {
             border-color: var(--r4-primary);
-            box-shadow: 0 0 0 .22rem rgba(13, 110, 253, .14);
+            box-shadow: 0 0 0 .22rem rgba(70, 107, 69, .14);
         }
 
         .btn {
@@ -132,8 +135,20 @@
             font-weight: 600;
         }
 
+        .btn-primary,
+        .text-bg-primary {
+            background-color: var(--r4-primary) !important;
+            border-color: var(--r4-primary) !important;
+        }
+
         .btn-primary {
-            box-shadow: 0 10px 25px rgba(13, 110, 253, .24);
+            box-shadow: 0 10px 25px rgba(70, 107, 69, .24);
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus {
+            background-color: var(--r4-primary-dark) !important;
+            border-color: var(--r4-primary-dark) !important;
         }
 
         .auth-link {
@@ -197,7 +212,7 @@
         $brandingLogoUrl = null;
     }
 
-    $appName = config('app.name', 'R4Software');
+    $appName = config('app.name', 'Oikos Solidale');
 @endphp
 
 <div class="container-fluid auth-shell">
@@ -209,22 +224,22 @@
                         @if($brandingLogoUrl)
                             <img src="{{ $brandingLogoUrl }}" alt="{{ $appName }}" class="auth-logo bg-white rounded-4 p-2">
                         @else
-                            <span class="auth-logo-fallback">R4</span>
+                            <span class="auth-logo-fallback">OS</span>
                         @endif
                     </a>
 
                     <div class="mb-4">
                         <span class="feature-pill mb-3">
-                            <i class="bi bi-lightning-charge-fill"></i>
-                            Piattaforma digitale R4Software
+                            <i class="bi bi-heart-pulse-fill"></i>
+                            Polo Sociale Formativo Integrato
                         </span>
 
                         <h1 class="display-6 fw-bold mb-3">
-                            R4Software
+                            Oikos Solidale
                         </h1>
 
                         <p class="fs-5 mb-0 opacity-75">
-                            CMS, CRM e strumenti digitali per gestire contenuti, clienti, preventivi, contratti e servizi web.
+                            Una casa solidale per formazione, inclusione sociale, sostegno alla famiglia, competenze digitali e accompagnamento delle fragilità.
                         </p>
                     </div>
                 </div>
@@ -233,30 +248,30 @@
                     <div class="row g-3">
                         <div class="col-12">
                             <div class="d-flex gap-3 align-items-start">
-                                <i class="bi bi-person-badge fs-4"></i>
+                                <i class="bi bi-mortarboard fs-4"></i>
                                 <div>
-                                    <div class="fw-semibold">Gestione CMS</div>
-                                    <div class="small opacity-75">Crea e aggiorna pagine, contenuti, media e sezioni visuali.</div>
+                                    <div class="fw-semibold">Formazione e scuola</div>
+                                    <div class="small opacity-75">Percorsi educativi, didattica, alta formazione, doposcuola e laboratori per giovani e adulti.</div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-12">
                             <div class="d-flex gap-3 align-items-start">
-                                <i class="bi bi-building-check fs-4"></i>
+                                <i class="bi bi-people fs-4"></i>
                                 <div>
-                                    <div class="fw-semibold">CRM integrato</div>
-                                    <div class="small opacity-75">Gestisci clienti, preventivi, contratti, attività e comunicazioni.</div>
+                                    <div class="fw-semibold">Famiglia e inclusione</div>
+                                    <div class="small opacity-75">Ascolto, accompagnamento, orientamento e supporto per famiglie, persone fragili e comunità.</div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-12">
                             <div class="d-flex gap-3 align-items-start">
-                                <i class="bi bi-shield-check fs-4"></i>
+                                <i class="bi bi-laptop fs-4"></i>
                                 <div>
-                                    <div class="fw-semibold">Strumenti professionali</div>
-                                    <div class="small opacity-75">Editor visuale, moduli, media library, SEO e automazioni operative.</div>
+                                    <div class="fw-semibold">Digitale e lavoro</div>
+                                    <div class="small opacity-75">Alfabetizzazione digitale, riqualificazione professionale, tirocini e collegamento con imprese ed enti.</div>
                                 </div>
                             </div>
                         </div>
@@ -272,7 +287,7 @@
                         @if($brandingLogoUrl)
                             <img src="{{ $brandingLogoUrl }}" alt="{{ $appName }}" class="auth-logo">
                         @else
-                            <span class="auth-logo-fallback">R4</span>
+                            <span class="auth-logo-fallback">OS</span>
                         @endif
                     </a>
                 </div>
