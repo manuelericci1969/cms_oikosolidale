@@ -1,0 +1,13 @@
+{
+  "slug": "r4-title-sub",
+  "name": "R4 Titolo & Sottotitolo",
+  "version": "1.0.0",
+  "author": "R4Software",
+  "blocks": [
+    { "type": "plugin:r4-title-sub", "label": "Titolo + Sottotitolo", "icon": "bi-type", "add_columns": 12 }
+  ],
+  "assets": {
+    "front": ["view.js", "view.css"]
+  },
+  "admin_entry": "admin.js"
+}

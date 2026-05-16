@@ -1,0 +1,17 @@
+/* /public/plugins/r4-title-sub/view.css */
+.r4ts-wrap{
+    padding: 2rem 1.25rem;
+    border-radius: 14px;
+}
+.r4ts-title{
+    margin: 0 0 .25rem;
+    line-height: 1.2;
+    font-size: clamp(1.5rem, 2.5vw + 1rem, 2.25rem);
+}
+.r4ts-sub{
+    margin: 0;
+    opacity: .9;
+    font-size: clamp(1rem, 1vw + .75rem, 1.25rem);
+}
+.r4ts-bold{ font-weight: 700; }
+.r4ts-italic{ font-style: italic; }

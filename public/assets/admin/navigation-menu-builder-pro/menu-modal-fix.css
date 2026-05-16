@@ -1,0 +1,7 @@
+body .modal-backdrop.show{z-index:1055}
+body .r4-nav-item-modal,body #confirmDeleteModal{position:fixed!important;inset:0!important;z-index:1065!important;width:100vw!important;height:100vh!important;margin:0!important;padding:24px!important;overflow-x:hidden!important;overflow-y:auto!important}
+body .r4-nav-item-modal.show,body #confirmDeleteModal.show{display:flex!important;align-items:flex-start!important;justify-content:center!important}
+body .r4-nav-item-modal .modal-dialog,body #confirmDeleteModal .modal-dialog{width:min(1180px,calc(100vw - 48px))!important;max-width:min(1180px,calc(100vw - 48px))!important;margin:24px auto!important;transform:none!important}
+body .r4-nav-item-modal .modal-content,body #confirmDeleteModal .modal-content{max-height:calc(100vh - 96px)!important;overflow:hidden!important;border-radius:18px;box-shadow:0 28px 80px rgba(2,6,23,.38)}
+body .r4-nav-item-modal .modal-body,body #confirmDeleteModal .modal-body{overflow-y:auto!important;max-height:calc(100vh - 210px)!important}
+@media(max-width:760px){body .r4-nav-item-modal,body #confirmDeleteModal{padding:12px!important}body .r4-nav-item-modal .modal-dialog,body #confirmDeleteModal .modal-dialog{width:calc(100vw - 24px)!important;max-width:calc(100vw - 24px)!important;margin:12px auto!important}body .r4-nav-item-modal .modal-content,body #confirmDeleteModal .modal-content{max-height:calc(100vh - 48px)!important}body .r4-nav-item-modal .modal-body,body #confirmDeleteModal .modal-body{max-height:calc(100vh - 170px)!important}}

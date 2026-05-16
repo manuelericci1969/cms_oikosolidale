@@ -1,0 +1,16 @@
+{
+    "slug": "r4-logos-carousel",
+    "name": "R4 Carosello Loghi",
+    "version": "1.2.2",
+    "author": "R4Software",
+    "blocks": [
+        { "type": "plugin:r4-logos-carousel", "label": "Carosello Loghi", "icon": "bi-sliders", "add_columns": 12 }
+    ],
+    "assets": {
+        "front": [
+            "/plugins/r4-logos-carousel/view.css",
+            "/plugins/r4-logos-carousel/view.js"
+        ]
+    },
+    "admin_entry": "/plugins/r4-logos-carousel/admin.js"
+}

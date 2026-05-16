@@ -1,0 +1,14 @@
+{
+  "slug": "my-hero",
+  "name": "My Hero",
+  "version": "1.0.0",
+  "author": "Tu",
+  "blocks": [
+    { "type": "plugin:my-hero", "label": "Hero (plugin)", "icon": "bi-megaphone", "add_columns": 12 }
+  ],
+  "assets": {
+    "front": ["view.js"]
+  },
+  "admin_entry": "admin.js"
+}
+

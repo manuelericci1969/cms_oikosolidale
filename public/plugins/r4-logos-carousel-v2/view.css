@@ -1,0 +1,116 @@
+/* R4 Carosello Loghi V2 — FRONTEND (v2.4.8) */
+
+.r4lc-v2{
+    --r4lc-height:72px;      /* altezza riga/logo default */
+    --r4lc-gap:24px;         /* spazio tra loghi */
+    --r4lc-item-w:auto;      /* larghezza box logo (auto = libera) */
+    --r4lc-item-h:var(--r4lc-height);
+    --r4lc-duration:20s;     /* fallback se JS non calcola */
+    --r4lc-play:running;     /* paused/running */
+    width: 100%;
+}
+.r4lc-v2, .r4lc-v2 *{ box-sizing: border-box; }
+
+.r4lc-v2-viewport{
+    overflow: hidden;
+    width: 100%;
+    height: var(--r4lc-item-h); /* blocca l’altezza del nastro */
+}
+
+.r4lc-v2-track{
+    display: flex;           /* orizzontale */
+    flex-wrap: nowrap;       /* mai a capo */
+    align-items: center;
+    gap: var(--r4lc-gap);
+    height: var(--r4lc-item-h);
+    width: max-content;      /* si estende quanto serve */
+    will-change: transform;
+    animation-name: r4lc-marquee-ltr;
+    animation-duration: var(--r4lc-duration);
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-play-state: var(--r4lc-play);
+}
+.r4lc-v2.is-rtl .r4lc-v2-track{ animation-name: r4lc-marquee-rtl; }
+
+.r4lc-v2-item{
+    flex: 0 0 var(--r4lc-item-w);
+    width: var(--r4lc-item-w);
+    height: var(--r4lc-item-h);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.r4lc-v2-link{
+    display: block;
+    height: 100%;
+    text-decoration: none;
+}
+
+.r4lc-v2-item img{
+    display: block;
+    height: 100%;     /* adatta sempre all’altezza del box */
+    width: auto;
+    max-width: 100%;  /* se box L×H, non esce mai */
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* --- Fade da opaco (grayscale) a colorato -------------------------------- */
+.r4lc-v2{
+    /* knobs personalizzabili */
+    --r4lc-fade-dur: 580ms;
+    --r4lc-fade-ease: cubic-bezier(.22,.61,.36,1);
+
+    /* stato base (spento) */
+    --r4lc-gray: 1;     /* 1 = B/N, 0 = a colori */
+    --r4lc-sat: 1;      /* saturazione base */
+    --r4lc-opa: .55;    /* opacità “spenta” */
+
+    /* stato hover (acceso) */
+    --r4lc-gray-hover: 0;
+    --r4lc-sat-hover: 1.1;  /* leggero boost */
+    --r4lc-opa-hover: 1;
+
+    --r4lc-hover-zoom: 1.03; /* 1.03 per un micro-zoom */
+}
+
+/* stato “spento” (default) – stessa lista di filtri del :hover */
+.r4lc-v2 .r4lc-v2-item img{
+    filter: grayscale(var(--r4lc-gray))
+    saturate(var(--r4lc-sat))
+    opacity(var(--r4lc-opa));
+    transition:
+            filter var(--r4lc-fade-dur) var(--r4lc-fade-ease),
+            transform var(--r4lc-fade-dur) var(--r4lc-fade-ease);
+}
+/* stato “acceso” (hover/focus) – stessi filtri con valori diversi */
+.r4lc-v2 .r4lc-v2-item:hover img,
+.r4lc-v2 .r4lc-v2-link:hover img,
+.r4lc-v2 .r4lc-v2-item:focus-within img,
+.r4lc-v2 .r4lc-v2-link:focus img{
+    filter: grayscale(var(--r4lc-gray-hover))
+    saturate(var(--r4lc-sat-hover))
+    opacity(var(--r4lc-opa-hover));
+    transform: scale(var(--r4lc-hover-zoom));
+}
+
+
+/* Keyframes: due copie adiacenti -> translate del 50% della larghezza del track */
+@keyframes r4lc-marquee-ltr{
+    from{ transform: translate3d(0,0,0); }
+    to  { transform: translate3d(-50%,0,0); }
+}
+@keyframes r4lc-marquee-rtl{
+    from{ transform: translate3d(-50%,0,0); }
+    to  { transform: translate3d(0,0,0); }
+}
+
+
+/* rispetto accessibilità */
+@media (prefers-reduced-motion: reduce){
+    .r4lc-v2 .r4lc-v2-item img{
+        transition-duration: 1ms;
+    }
+}

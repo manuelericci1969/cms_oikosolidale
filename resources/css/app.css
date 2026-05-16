@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    /* Immagini dentro i blocchi testo del Page Builder (frontend) */
+    .pb-block-text img,
+    .pb-text img {
+        @apply max-w-full h-auto;
+    }
+}

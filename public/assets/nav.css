@@ -1,0 +1,68 @@
+/* R4 Nav — CSS variabili (compatibile con .r4-nav e con la tua Bootstrap navbar) */
+.r4-nav,
+.navbar[data-r4-nav="1"]{
+    position:relative;
+    background: var(--nav-bg);
+    transition: background-color .25s ease, box-shadow .25s ease;
+}
+
+.r4-nav.r4-nav--sticky{
+    position: sticky;
+    top: 0;
+    backdrop-filter: saturate(1.1) blur(6px);
+    /* NON impostare un z-index più basso di Bootstrap */
+    /*z-index: 50;*/
+}
+
+.r4-nav.is-scrolled,
+.navbar[data-r4-nav="1"].is-scrolled{
+    background: var(--nav-bg-scrolled);
+    box-shadow: 0 10px 20px -15px rgba(0,0,0,.25);
+}
+
+/* Componenti opzionali per menu custom (non necessari con navbar Bootstrap pura) */
+.r4-nav__inner{ max-width: 1200px; margin: 0 auto; padding: .5rem 1rem; display: flex; }
+.r4-nav__inner--left{ justify-content: flex-start; }
+.r4-nav__inner--center{ justify-content: center; }
+.r4-nav__inner--right{ justify-content: flex-end; }
+
+.r4-nav__list{
+    display:flex; gap: 1rem; list-style:none; margin:0; padding:0;
+    font-family: var(--nav-font, inherit); font-size: var(--nav-font-size,16px);
+    font-weight: var(--nav-weight,600); font-style: var(--nav-style,normal);
+}
+.r4-nav__list--text-left{ text-align:left; }
+.r4-nav__list--text-center{ text-align:center; }
+.r4-nav__list--text-right{ text-align:right; }
+
+.r4-nav__item{ position:relative; }
+.r4-nav__link{
+    display:flex; align-items:center; gap:.5rem; padding:.5rem .75rem; color: var(--nav-link);
+    text-decoration:none; border-radius: .5rem; background: var(--nav-item-bg);
+}
+.r4-nav__link:hover{ color: var(--nav-link-hover); }
+
+/* submenu (per menu custom) */
+.r4-nav__item:hover > .r4-nav__submenu{ display:block; }
+.r4-nav__submenu{
+    display:none; position:absolute; left:0; top:100%; min-width: 220px; padding:.5rem; margin-top:.25rem;
+    background: var(--nav-sub-bg); border:1px solid rgba(0,0,0,.06); border-radius:.75rem; box-shadow: 0 8px 24px rgba(16,24,40,.15);
+}
+.r4-nav__subitem{ list-style:none; }
+.r4-nav__sublink{
+    display:block; padding:.4rem .6rem; color: var(--nav-link); text-decoration:none; border-radius:.375rem;
+}
+.r4-nav__sublink:hover{ color: var(--nav-link-hover); background: rgba(0,0,0,.04); }
+
+/* separatori (custom + bootstrap helper) */
+.r4-nav__sep{ display:flex; align-items:center; }
+.r4-nav__sep > span{ display:block; width:1px; height:1.25rem; background: rgba(0,0,0,.15); margin: 0 .35rem; }
+.r4-nav__submenu .r4-nav__sep > span{ width:100%; height:1px; margin:.25rem 0; }
+
+/* Extra per la tua Bootstrap navbar */
+.navbar[data-r4-nav="1"] .nav-link:hover{ color: var(--nav-link-hover) !important; }
+.navbar[data-r4-nav="1"] .dropdown-menu{
+    background: var(--nav-sub-bg);
+    border:1px solid rgba(0,0,0,.06);
+    border-radius:.75rem;
+}

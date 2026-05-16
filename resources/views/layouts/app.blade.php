@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    @php
+        use App\Models\Media;
+        use App\Models\Menu;
+        use App\Services\Seo\SeoManager;
+        use Illuminate\Support\Facades\Cache;
+
+        $pageModel = $page ?? null;
+        $pageMeta  = ($pageModel && is_array($pageModel->meta ?? null)) ? $pageModel->meta : [];
+        $pageSeo   = $pageModel ? app(SeoManager::class)->forPage($pageModel) : [];
+        $pageIsHomepage = $pageModel && (bool) ($pageModel->is_homepage ?? false);
+
+        $defaultTitle     = (string) setting('seo.meta_title', config('app.name', 'R4Software'));
+        $defaultDesc      = (string) setting('seo.meta_description', '');
+        $defaultKeywords  = (string) setting('seo.meta_keywords', '');
+        $metaArray = (isset($meta) && is_array($meta)) ? $meta : [];
+
+        $pageTitleFromModel = '';
+        $pageDescFromModel = '';
+        $pageKeywordsFromModel = '';
+        if ($pageModel) {
+            $pageTitleFromModel = method_exists($pageModel, 'getMetaTitle') ? (string) $pageModel->getMetaTitle() : '';
+            $pageDescFromModel = method_exists($pageModel, 'getMetaDescription') ? (string) $pageModel->getMetaDescription() : '';
+            $pageKeywordsFromModel = method_exists($pageModel, 'getMetaKeywords') ? (string) $pageModel->getMetaKeywords() : (string) data_get($pageModel->meta ?? [], 'keywords', '');
+        }
+
+        $yieldTitle = (string) $__env->yieldContent('title');
+        $yieldDesc  = (string) $__env->yieldContent('meta_description');
+        $yieldKeys  = (string) $__env->yieldContent('meta_keywords');
+
+        $metaTitle = (string) ($metaArray['title'] ?? $pageTitleFromModel);
+        $metaDesc  = (string) ($metaArray['description'] ?? $pageDescFromModel);
+        $metaKeys  = (string) ($metaArray['keywords'] ?? $pageKeywordsFromModel);
+
+        $pageTitle = trim((string) (data_get($pageSeo, 'title') ?: ($yieldTitle !== '' ? $yieldTitle : ($metaTitle !== '' ? $metaTitle : $defaultTitle))));
+        $pageDesc  = trim((string) (data_get($pageSeo, 'description') ?: ($yieldDesc !== '' ? $yieldDesc : ($metaDesc !== '' ? $metaDesc : $defaultDesc))));
+        $pageKeywords = trim((string) (data_get($pageSeo, 'keywords') ?: ($yieldKeys !== '' ? $yieldKeys : ($metaKeys !== '' ? $metaKeys : $defaultKeywords))));
+
+        $hasDesc = $pageDesc !== '';
+        $hasKeywords = $pageKeywords !== '';
+
+        $robots     = (string) (data_get($pageSeo, 'robots') ?: setting('seo.robots','index,follow'));
+        $canonical  = (string) data_get($pageSeo, 'canonical', '');
+        $themeColor = (string) setting('ui.theme_color', '#0d6efd');
+        $ga4        = setting('analytics.ga4_id');
+        $gtm        = setting('analytics.gtm_id');
+
+        $logoId     = setting('branding.logo_id');
+        $faviconId  = setting('branding.favicon_id');
+        $fallbackOgId = setting('seo.og_image_id') ?: $logoId;
+        $mediaIds = array_filter([$faviconId, $fallbackOgId]);
+        $medias   = $mediaIds ? Media::whereIn('id', $mediaIds)->get()->keyBy('id') : collect();
+        $fav      = $faviconId ? ($medias[$faviconId] ?? null) : null;
+        $fallbackOg = $fallbackOgId ? ($medias[$fallbackOgId] ?? null) : null;
+
+        $ogType = (string) (data_get($pageSeo, 'og_type') ?: 'website');
+        $ogTitle = (string) (data_get($pageSeo, 'og_title') ?: $pageTitle);
+        $ogDescription = (string) (data_get($pageSeo, 'og_description') ?: $pageDesc);
+        $ogImage = (string) (data_get($pageSeo, 'og_image') ?: ($fallbackOg?->url ?? ''));
+        $ogUrl = $pageIsHomepage
+            ? ($canonical ?: rtrim((string) config('app.url'), '/'))
+            : (string) (data_get($pageSeo, 'og_url') ?: ($canonical ?: url()->current()));
+
+        $twitterCard = (string) (data_get($pageSeo, 'twitter_card') ?: ($ogImage !== '' ? 'summary_large_image' : 'summary'));
+        $twitterTitle = (string) (data_get($pageSeo, 'twitter_title') ?: $ogTitle);
+        $twitterDescription = (string) (data_get($pageSeo, 'twitter_description') ?: $ogDescription);
+        $twitterImage = (string) (data_get($pageSeo, 'twitter_image') ?: $ogImage);
+        $schemaJsonLd = (string) data_get($pageSeo, 'schema', '');
+
+        $norm = function ($v, $fallback = '') {
+            if (is_string($v)) return trim($v);
+            if (is_array($v) && isset($v[0]) && is_string($v[0])) return trim($v[0]);
+            if (is_numeric($v)) return (string)$v;
+            return $fallback;
+        };
+
+        $typo = [
+            'body_family'    => $norm(setting('typography.body_family','Inter'), 'Inter'),
+            'heading_family' => $norm(setting('typography.heading_family','Inter'), 'Inter'),
+            'title_family'   => $norm(setting('typography.title_family',''), ''),
+            'body_weight'    => $norm(setting('typography.body_weight','400'), '400'),
+            'heading_weight' => $norm(setting('typography.heading_weight','700'), '700'),
+            'title_weight'   => $norm(setting('typography.title_weight','700'), '700'),
+            'body_italic'    => (bool) setting('typography.body_italic', false),
+            'heading_italic' => (bool) setting('typography.heading_italic', false),
+            'title_italic'   => (bool) setting('typography.title_italic', false),
+            'body_size'      => $norm(setting('typography.body_size','1rem'), '1rem'),
+            'lead_size'      => $norm(setting('typography.lead_size','1.25rem'), '1.25rem'),
+            'h1' => $norm(setting('typography.h1_size','2.5rem'), '2.5rem'),
+            'h2' => $norm(setting('typography.h2_size','2rem'), '2rem'),
+            'h3' => $norm(setting('typography.h3_size','1.75rem'), '1.75rem'),
+            'h4' => $norm(setting('typography.h4_size','1.5rem'), '1.5rem'),
+            'h5' => $norm(setting('typography.h5_size','1.25rem'), '1.25rem'),
+            'h6' => $norm(setting('typography.h6_size','1rem'), '1rem'),
+        ];
+        if ($typo['title_family'] === '') $typo['title_family'] = $typo['heading_family'];
+
+        $fallbacks = [
+            'Arial' => 'Arial, Helvetica, sans-serif',
+            'Verdana' => 'Verdana, Geneva, sans-serif',
+            'Times New Roman' => '\'Times New Roman\', Times, serif',
+            'Georgia' => 'Georgia, \'Times New Roman\', Times, serif',
+            'Tahoma' => 'Tahoma, Geneva, sans-serif',
+            'Trebuchet MS' => '\'Trebuchet MS\', Helvetica, sans-serif',
+            'Courier New' => '\'Courier New\', Courier, monospace',
+        ];
+        $stack = function ($family) use ($fallbacks) {
+            if (!$family) return 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans"';
+            return $fallbacks[$family] ?? ('"'.e($family).'", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans"');
+        };
+
+        $systemFamilies = array_keys($fallbacks);
+        $roles = [
+            ['f'=>$typo['body_family'],    'w'=>max(400, (int)$typo['body_weight']),    'i'=>$typo['body_italic']],
+            ['f'=>$typo['heading_family'], 'w'=>max(400, (int)$typo['heading_weight']), 'i'=>$typo['heading_italic']],
+            ['f'=>$typo['title_family'],   'w'=>max(400, (int)$typo['title_weight']),   'i'=>$typo['title_italic']],
+        ];
+        $needs = [];
+        foreach ($roles as $r) {
+            $f = $norm($r['f'], '');
+            if ($f === '' || in_array($f, $systemFamilies, true)) continue;
+            $k = str_replace(' ','+',$f);
+            $needs[$k] = $needs[$k] ?? [];
+            $needs[$k]["0,400"] = true;
+            $needs[$k]["0,{$r['w']}"] = true;
+            if ($r['i']) {
+                $needs[$k]["1,400"] = true;
+                $needs[$k]["1,{$r['w']}"] = true;
+            }
+        }
+        $families = [];
+        foreach ($needs as $fam => $pairs) {
+            ksort($pairs);
+            $families[] = "family={$fam}:ital,wght@".implode(';', array_keys($pairs));
+        }
+        $gfQuery = $families ? implode('&', $families) . '&display=swap' : null;
+        $rev = Cache::get('settings.rev', (string) now()->timestamp);
+
+        $headerMenuForLayout = Menu::byLocation('header')->active()->first();
+        $headerMenuCfg = ($headerMenuForLayout->settings ?? []) + [
+            'bottom_gap' => 0,
+            'first_block_offset' => 0,
+            'remove_first_gap' => false,
+        ];
+        $headerBottomGap = max(0, min(240, (int)($headerMenuCfg['bottom_gap'] ?? 0)));
+        $headerFirstBlockOffset = max(-240, min(240, (int)($headerMenuCfg['first_block_offset'] ?? 0)));
+        $headerRemoveFirstGap = !empty($headerMenuCfg['remove_first_gap']);
+        $publicContentTopGap = $headerRemoveFirstGap ? 0 : max(0, $headerBottomGap + $headerFirstBlockOffset);
+    @endphp
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="robots" content="{{ $robots }}">
+    <meta name="theme-color" content="{{ $themeColor }}">
+    <title>{{ $pageTitle }}</title>
+    @if($hasDesc)<meta name="description" content="{{ $pageDesc }}">@endif
+    @if($hasKeywords)<meta name="keywords" content="{{ $pageKeywords }}">@endif
+    @if($canonical !== '')<link rel="canonical" href="{{ $canonical }}">@endif
+
+    <meta property="og:type" content="{{ $ogType }}">
+    <meta property="og:title" content="{{ $ogTitle }}">
+    @if($ogDescription !== '')<meta property="og:description" content="{{ $ogDescription }}">@endif
+    <meta property="og:url" content="{{ $ogUrl }}">
+    <meta property="og:site_name" content="R4Software">
+    <meta property="og:locale" content="it_IT">
+    @if($ogImage !== '')
+        <meta property="og:image" content="{{ $ogImage }}">
+        <meta property="og:image:secure_url" content="{{ $ogImage }}">
+        <meta property="og:image:alt" content="{{ $ogTitle }}">
+        @if(!empty($fallbackOg?->width) && $ogImage === $fallbackOg?->url)<meta property="og:image:width" content="{{ $fallbackOg->width }}">@endif
+        @if(!empty($fallbackOg?->height) && $ogImage === $fallbackOg?->url)<meta property="og:image:height" content="{{ $fallbackOg->height }}">@endif
+    @endif
+
+    <meta name="twitter:card" content="{{ $twitterCard }}">
+    <meta name="twitter:title" content="{{ $twitterTitle }}">
+    @if($twitterDescription !== '')<meta name="twitter:description" content="{{ $twitterDescription }}">@endif
+    @if($twitterImage !== '')<meta name="twitter:image" content="{{ $twitterImage }}">@endif
+
+    @if (!app()->environment('local'))
+        <script>
+            !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '1806058662957318');fbq('track', 'PageView');
+        </script>
+    @endif
+
+    @if($fav)<link rel="icon" href="{{ $fav->variantUrl('thumb') ?? $fav->url }}">@endif
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('assets/nav.css') }}?v={{ $rev }}">
+    <link rel="stylesheet" href="{{ asset('pb/v3/runtime.css') }}?v={{ $rev }}">
+
+    @if($gfQuery)
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?{{ $gfQuery }}&v={{ $rev }}" rel="stylesheet">
+    @endif
+
+    <style>
+        :root{
+            --font-body: {!! $stack($typo['body_family']) !!};
+            --font-heading: {!! $stack($typo['heading_family']) !!};
+            --font-title: {!! $stack($typo['title_family'] ?: $typo['heading_family']) !!};
+            --weight-body: {{ (int) $typo['body_weight'] ?: 400 }};
+            --weight-heading: {{ (int) $typo['heading_weight'] ?: 700 }};
+            --weight-title: {{ (int) $typo['title_weight'] ?: 700 }};
+            --style-body: {{ $typo['body_italic'] ? 'italic' : 'normal' }};
+            --style-heading: {{ $typo['heading_italic'] ? 'italic' : 'normal' }};
+            --style-title: {{ $typo['title_italic'] ? 'italic' : 'normal' }};
+            --size-body: {{ $typo['body_size'] }};
+            --size-lead: {{ $typo['lead_size'] }};
+            --size-h1: {{ $typo['h1'] }};
+            --size-h2: {{ $typo['h2'] }};
+            --size-h3: {{ $typo['h3'] }};
+            --size-h4: {{ $typo['h4'] }};
+            --size-h5: {{ $typo['h5'] }};
+            --size-h6: {{ $typo['h6'] }};
+            --r4-public-content-top-gap: {{ $publicContentTopGap }}px;
+        }
+        body{font-family:var(--font-body);font-size:var(--size-body);font-weight:var(--weight-body);font-style:var(--style-body)}
+        .lead{font-size:var(--size-lead)}
+        h1,h2,h3,h4,h5,h6{font-family:var(--font-heading);font-weight:var(--weight-heading);font-style:var(--style-heading)}
+        h1{font-family:var(--font-title);font-weight:var(--weight-title);font-style:var(--style-title);font-size:var(--size-h1)}
+        h2{font-size:var(--size-h2)}h3{font-size:var(--size-h3)}h4{font-size:var(--size-h4)}h5{font-size:var(--size-h5)}h6{font-size:var(--size-h6)}
+        .navbar-brand{font-family:var(--font-heading)}
+    </style>
+
+    @stack('styles')
+
+    @if($ga4)
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ $ga4 }}"></script>
+        <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','{{ $ga4 }}');</script>
+    @endif
+    @if($gtm)
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f)})(window,document,'script','dataLayer','{{ $gtm }}');</script>
+    @endif
+
+    @if($schemaJsonLd !== '')
+        {!! $schemaJsonLd !!}
+    @endif
+
+    <style>
+        .pb-fullbleed{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}
+        .pb-boxed{max-width:1200px;width:100%;margin-left:auto;margin-right:auto}
+        .pb-page-bg-overlay{position:fixed;inset:0;pointer-events:none;z-index:0}
+        .pb-site-content{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
+    </style>
+</head>
+
+@php
+    $layoutCfg = is_array(data_get($pageMeta, 'layout', null)) ? data_get($pageMeta, 'layout', []) : [];
+    $widthRaw = (string)($layoutCfg['width'] ?? 'standard');
+    $widthMap = ['standard'=>'standard','container'=>'standard','boxed'=>'boxed','full'=>'full','fullwidth'=>'full','full_width'=>'full'];
+    $layoutWidth = $widthMap[$widthRaw] ?? 'standard';
+    $layoutGutter = isset($layoutCfg['gutter']) ? (int)$layoutCfg['gutter'] : 24;
+    if ($layoutGutter < 0) $layoutGutter = 0;
+    if ($layoutGutter > 200) $layoutGutter = 200;
+    $pageContainerClass = 'pb-page-container';
+    if ($layoutWidth === 'standard') $pageContainerClass .= ' container';
+    if ($layoutWidth === 'boxed') $pageContainerClass .= ' pb-boxed';
+    if ($layoutWidth === 'full') $pageContainerClass .= ' pb-fullbleed';
+    $pageContainerStyle = "padding-left:{$layoutGutter}px;padding-right:{$layoutGutter}px;padding-top:var(--r4-public-content-top-gap);";
+
+    $bg = is_array(data_get($pageMeta, 'page_bg', null)) ? data_get($pageMeta, 'page_bg', []) : [];
+    $bgType = strtolower((string)($bg['type'] ?? 'none'));
+    $bodyStyle = '';
+    $overlayEnabled = false;
+    $overlayStyle = '';
+    $cssUrl = function(string $u): string { $u = trim($u); if ($u === '') return ''; return str_replace(["\n","\r","'","\""], '', $u); };
+    $allowedPos = ['center center','top center','bottom center','center left','center right'];
+    $allowedSize = ['cover','contain','auto'];
+    $allowedRep = ['no-repeat','repeat','repeat-x','repeat-y'];
+    $allowedAtt = ['scroll','fixed'];
+    if ($bgType === 'color') {
+        $c = (string)($bg['color'] ?? '#ffffff'); if ($c !== '') $bodyStyle .= "background-color:{$c};";
+    } elseif ($bgType === 'gradient') {
+        $legacyGrad = is_array($bg['gradient'] ?? null) ? $bg['gradient'] : [];
+        $from = (string)($bg['from'] ?? ($legacyGrad['from'] ?? '#0d6efd'));
+        $to = (string)($bg['to'] ?? ($legacyGrad['to'] ?? '#6610f2'));
+        $angleRaw = $bg['angle'] ?? ($legacyGrad['angle'] ?? 135);
+        $angle = is_numeric($angleRaw) ? ((int)$angleRaw % 360) : 135;
+        $bodyStyle .= "background-image:linear-gradient({$angle}deg, {$from}, {$to});";
+    } elseif ($bgType === 'image') {
+        $img = is_array($bg['image'] ?? null) ? $bg['image'] : [];
+        $src = $cssUrl((string)($img['src'] ?? ''));
+        if ($src !== '') {
+            $pos = (string)($img['position'] ?? 'center center'); if (!in_array($pos, $allowedPos, true)) $pos = 'center center';
+            $size = (string)($img['size'] ?? 'cover'); if (!in_array($size, $allowedSize, true)) $size = 'cover';
+            $rep = (string)($img['repeat'] ?? 'no-repeat'); if (!in_array($rep, $allowedRep, true)) $rep = 'no-repeat';
+            $att = (string)($img['attachment'] ?? 'scroll'); if (!in_array($att, $allowedAtt, true)) $att = 'scroll';
+            $baseColor = (string)($bg['color'] ?? ''); if ($baseColor !== '') $bodyStyle .= "background-color:{$baseColor};";
+            $bodyStyle .= "background-image:url('{$src}');background-position:{$pos};background-size:{$size};background-repeat:{$rep};background-attachment:{$att};";
+            $ov = is_array(data_get($img, 'overlay', null)) ? data_get($img, 'overlay', []) : [];
+            $overlayEnabled = (bool)($ov['enabled'] ?? false);
+            if ($overlayEnabled) {
+                $ovColor = (string)($ov['color'] ?? '#000000');
+                $ovOp = (float)($ov['opacity'] ?? 0.35); if ($ovOp < 0) $ovOp = 0; if ($ovOp > 0.9) $ovOp = 0.9;
+                $overlayStyle = "background-color:{$ovColor};opacity:{$ovOp};";
+            }
+        }
+    }
+    $showBreadcrumbs = (bool) data_get($pageMeta, 'show_breadcrumbs', true);
+@endphp
+
+<body class="d-flex flex-column min-vh-100" style="{{ $bodyStyle }}">
+@if (!app()->environment('local'))
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1806058662957318&ev=PageView&noscript=1" alt=""></noscript>
+@endif
+<a id="top" tabindex="-1" aria-hidden="true"></a>
+@if($overlayEnabled)<div class="pb-page-bg-overlay" style="{{ $overlayStyle }}"></div>@endif
+
+<div class="pb-site-content">
+    @if(!empty($gtm))
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $gtm }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    @endif
+
+    @includeIf('partials.navbar')
+
+    @isset($header)
+        <header class="border-bottom bg-light"><div class="container py-3">{{ $header }}</div></header>
+    @endisset
+
+    <main class="flex-grow-1">
+        <div class="{{ $pageContainerClass }}" style="{{ $pageContainerStyle }}">
+            @if($showBreadcrumbs)
+                @includeIf('partials.breadcrumbs')
+            @endif
+            {{ $slot ?? '' }}
+            @yield('content')
+        </div>
+    </main>
+
+    @includeIf('partials.footer')
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    @php
+        $pm = app(\App\Services\PluginManager::class);
+        $pluginFrontAssets = $pm->frontAssets();
+        if (empty($pluginFrontAssets)) $pluginFrontAssets = $pm->frontendAssets();
+    @endphp
+    @foreach($pluginFrontAssets as $asset)
+        @php $path = parse_url($asset, PHP_URL_PATH) ?? $asset; $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION)); @endphp
+        @if($ext === 'css' || preg_match('/\.css(\?.*)?$/i', $asset))
+            <link rel="stylesheet" href="{{ $asset }}">
+        @elseif($ext === 'js' || $ext === 'mjs' || preg_match('/\.(m?js)(\?.*)?$/i', $asset))
+            <script src="{{ $asset }}" defer></script>
+        @else
+            <link rel="stylesheet" href="{{ $asset }}">
+        @endif
+    @endforeach
+
+    @stack('scripts')
+    <script defer src="{{ asset('assets/nav.js') }}"></script>
+    <style id="smooth-reassert">@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth!important}}</style>
+    @include('crm::public.chatbot-widget')
+    @include('partials.cookie-banner')
+</div>
+</body>
+</html>

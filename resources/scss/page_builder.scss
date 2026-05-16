@@ -1,0 +1,35 @@
+:root { --pb-b:#e5e7eb; --pb-muted:#6b7280; --pb-primary:#0d6efd; --pb-bg:#f6f8fb; }
+body { background: var(--pb-bg); }
+
+.pb-topbar{ position:sticky; top:0; z-index:12; background:#fff; border-bottom:1px solid var(--pb-b); }
+.pb-topbar__inner{ display:flex; align-items:center; justify-content:space-between; gap:.75rem; padding:.6rem .9rem; max-width:1200px; margin:0 auto; }
+.pb-topbar__left{ display:flex; align-items:center; gap:.5rem; }
+.pb-badge{ border:1px solid var(--pb-b); border-radius:999px; padding:.2rem .55rem; font-size:.85rem; background:#fff; }
+.muted{ color:var(--pb-muted); }
+
+.pb-container{ max-width:1200px; margin:12px auto; padding:0 12px; }
+.pb-grid{ display:flex; flex-wrap:wrap; gap:12px; }
+.pb-aside{ flex:0 0 280px; max-width:280px; }
+.pb-main{ flex:1 0 0; min-width:0; }
+
+.pb-card{ border:1px solid var(--pb-b); border-radius:12px; background:#fff; }
+.pb-card__head{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; padding:.7rem .9rem; border-bottom:1px solid var(--pb-b); }
+.pb-card__title{ display:flex; align-items:center; gap:.45rem; }
+.pb-card__body{ padding:.9rem; }
+
+.pb-btn{ display:inline-flex; align-items:center; gap:.4rem; padding:.42rem .75rem; border:1px solid var(--pb-b); border-radius:999px; background:#fff; cursor:pointer; }
+.pb-btn--primary{ border-color:var(--pb-primary); color:var(--pb-primary); }
+.pb-btn--danger{ border-color:#dc3545; color:#dc3545; }
+.pb-btn--sm{ padding:.3rem .55rem; border-radius:10px; font-size:.9rem; }
+
+.pb-section{ border:1px solid var(--pb-b); border-radius:10px; overflow:hidden; margin-bottom:10px; background:#fff; }
+.pb-head{ background:#fff; border-bottom:1px solid var(--pb-b); padding:.6rem .7rem; display:flex; align-items:center; justify-content:space-between; }
+.pb-body{ padding:.7rem; }
+
+.pb-toolbar{ display:flex; align-items:center; justify-content:space-between; padding:.45rem .6rem; border-bottom:1px solid var(--pb-b); }
+.pb-block{ border:1px solid var(--pb-b); border-radius:10px; background:#fff; margin-bottom:.6rem; }
+.pb-inner{ padding:.7rem; }
+
+.pb-palette{ display:flex; flex-wrap:wrap; gap:.4rem; }
+.pb-editable{ min-height:120px; border:1px dashed var(--pb-b); border-radius:8px; padding:.55rem; }
+.pb-editable:empty:before{ content:'Scrivi…'; color:var(--pb-muted); }

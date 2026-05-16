@@ -1,0 +1,331 @@
+/* public/pb/pb.css */
+
+/* Layout generico builder */
+#builderContainer {
+    min-height: 120px;
+}
+
+/* PB V4 sidebar */
+.pb-v4-shell {
+    display: grid;
+    grid-template-columns: 292px minmax(0, 1fr);
+    gap: 1rem;
+    align-items: start;
+}
+
+.pb-v4-sidebar {
+    position: sticky;
+    top: 82px;
+    max-height: calc(100vh - 98px);
+    overflow: auto;
+    background: #1f2227;
+    color: #f8f9fa;
+    border: 1px solid rgba(255, 255, 255, .08);
+    border-radius: .85rem;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, .18);
+}
+
+.pb-sidebar-title {
+    padding: .9rem 1rem;
+    font-weight: 700;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+
+.pb-sidebar-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+
+.pb-sidebar-tabs button {
+    border: 0;
+    border-bottom: 3px solid transparent;
+    background: transparent;
+    color: #d7dae0;
+    padding: .7rem .35rem;
+    font-size: .78rem;
+    font-weight: 700;
+}
+
+.pb-sidebar-tabs button:hover,
+.pb-sidebar-tabs button.is-active {
+    color: #fff;
+    border-bottom-color: #fff;
+    background: rgba(255, 255, 255, .04);
+}
+
+.pb-sidebar-panels {
+    padding: .85rem;
+}
+
+.pb-sidebar-search {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    border: 1px solid rgba(255, 255, 255, .16);
+    border-radius: .45rem;
+    padding: .45rem .65rem;
+    color: #9ca3af;
+    margin-bottom: .85rem;
+}
+
+.pb-sidebar-search input {
+    min-width: 0;
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #f8f9fa;
+    font-size: .82rem;
+}
+
+.pb-sidebar-search input::placeholder {
+    color: #9ca3af;
+    font-style: italic;
+}
+
+.pb-sidebar-group {
+    padding-top: .85rem;
+    margin-top: .85rem;
+    border-top: 1px solid rgba(255, 255, 255, .08);
+}
+
+.pb-sidebar-group:first-child {
+    padding-top: 0;
+    margin-top: 0;
+    border-top: 0;
+}
+
+.pb-sidebar-group h4 {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    margin: 0 0 .65rem;
+    font-size: .9rem;
+    font-weight: 800;
+    color: #fff;
+}
+
+.pb-sidebar-group h4::before {
+    content: '';
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 4px solid #fff;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    opacity: .9;
+}
+
+.pb-sidebar-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .6rem;
+}
+
+.pb-sidebar-item {
+    min-height: 92px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .45rem;
+    padding: .75rem .45rem;
+    border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: .45rem;
+    background: #202328;
+    color: #f8f9fa;
+    text-align: center;
+    transition: border-color .16s ease, background-color .16s ease, transform .16s ease;
+}
+
+.pb-sidebar-item:hover {
+    border-color: rgba(255, 255, 255, .45);
+    background: #272b31;
+    transform: translateY(-1px);
+}
+
+.pb-sidebar-item-icon {
+    font-size: 1.45rem;
+    line-height: 1;
+    color: #f8f9fa;
+}
+
+.pb-sidebar-item-text strong {
+    display: block;
+    font-size: .78rem;
+    line-height: 1.2;
+}
+
+.pb-sidebar-item-text small {
+    display: block;
+    margin-top: .15rem;
+    font-size: .68rem;
+    color: #aeb4bd;
+    line-height: 1.2;
+}
+
+.pb-sidebar-page-settings {
+    color: #212529;
+}
+
+.pb-sidebar-page-settings .card {
+    border: 1px solid rgba(255, 255, 255, .1);
+    border-radius: .6rem;
+    overflow: hidden;
+}
+
+.pb-sidebar-page-settings .card-header {
+    padding: .65rem .75rem;
+    font-size: .86rem;
+}
+
+.pb-sidebar-page-settings .card-body {
+    padding: .75rem;
+}
+
+.pb-sidebar-page-settings .form-label,
+.pb-sidebar-page-settings .form-text,
+.pb-sidebar-page-settings .form-check-label {
+    font-size: .78rem;
+}
+
+.pb-v4-canvas {
+    min-width: 0;
+}
+
+@media (max-width: 1199.98px) {
+    .pb-v4-shell {
+        grid-template-columns: 1fr;
+    }
+
+    .pb-v4-sidebar {
+        position: relative;
+        top: auto;
+        max-height: none;
+    }
+}
+
+/* Sezioni */
+.pb-section-header .badge {
+    font-weight: 500;
+}
+
+/* Blocchi */
+.pb-block {
+    border-radius: .75rem;
+    overflow: hidden;
+}
+
+.pb-block .card-body {
+    padding: .75rem .75rem .5rem;
+}
+
+/* Toolbar blocchi */
+.pb-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .25rem .5rem;
+    align-items: center;
+    margin-bottom: .5rem;
+}
+
+.pb-toolbar .badge {
+    font-weight: 500;
+}
+
+.pb-toolbar .small-muted {
+    font-size: .75rem;
+    color: #6c757d;
+}
+
+.pb-toolbar-break {
+    flex-basis: 100%;
+    height: 0;
+}
+
+/* Editor rich text */
+.pb-richtext-editor {
+    min-height: 140px;
+    border: 1px solid #dee2e6;
+    border-radius: .375rem;
+    padding: .75rem;
+    font-size: .95rem;
+    background-color: #fff;
+}
+
+.pb-richtext-editor:focus {
+    outline: 0;
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 .2rem rgba(13, 110, 253, .25);
+}
+
+/* Panel impostazioni blocco */
+.pb-style-panel {
+    border: 1px solid #e5e7eb;
+    border-radius: .5rem;
+    padding: .25rem .75rem .75rem;
+    background: #f8fafc;
+    margin-top: .5rem;
+    font-size: .86rem;
+}
+
+.pb-style-panel > summary {
+    cursor: pointer;
+    list-style: none;
+    font-weight: 500;
+    color: #495057;
+}
+
+.pb-style-panel > summary::-webkit-details-marker {
+    display: none;
+}
+
+.pb-style-panel[open] > summary {
+    margin-bottom: .5rem;
+}
+
+/* Pannello resize immagini nel rich text */
+.pb-img-panel {
+    position: fixed;
+    z-index: 1055;
+    border-radius: .75rem;
+    display: none;
+}
+
+.pb-img-panel.pb-img-panel--visible {
+    display: block;
+}
+
+.pb-img-selected {
+    outline: 2px solid #0d6efd;
+    outline-offset: 2px;
+}
+
+/* Immagine blocco */
+.pb-image-preview {
+    border-radius: .5rem;
+    overflow: hidden;
+    background: #f1f3f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+    margin-bottom: .5rem;
+}
+
+.pb-image-preview img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Piccoli aggiustamenti */
+.pb-section-row .pb-block-col {
+    display: flex;
+}
+
+.pb-section-row .pb-block {
+    width: 100%;
+}

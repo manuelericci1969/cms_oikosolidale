@@ -1,0 +1,104 @@
+/* R4 Carosello Loghi (front) — v1.2.0 */
+.r4lc{
+    /* configurazione */
+    --r4lc-visible:5;          /* quanti loghi “virtualmente” visibili */
+    --r4lc-gap:24px;           /* gap tra card */
+    --r4lc-height:72px;        /* altezza massima delle immagini */
+    --r4lc-item-h:var(--r4lc-height);
+    --r4lc-play:running;       /* running | paused */
+    /* fallback larghezza (se JS non carica): % calcolata su --r4lc-visible */
+    --r4lc-item-w-fallback: calc((100% - (var(--r4lc-gap) * (var(--r4lc-visible) - 1))) / var(--r4lc-visible));
+    /* il JS imposta questa in px: ha priorità sul fallback */
+    /* es.: --r4lc-item-w-px: 180px; */
+
+    position:relative;
+    width:100%;
+    overflow:hidden;
+}
+.r4lc:hover{ --r4lc-play: paused; }
+
+/* viewport maschera */
+.r4lc-viewport{
+    width:100%;
+    overflow:hidden;
+}
+
+/* traccia scorrevole */
+.r4lc-track{
+    display:flex;
+    align-items:center;
+    gap:var(--r4lc-gap);
+    flex-wrap:nowrap;
+    width:max-content;                 /* evita compressioni/stili strani */
+    will-change:transform;
+    animation:r4lc-marquee var(--r4lc-duration,30s) linear infinite;
+    animation-play-state:var(--r4lc-play);
+}
+
+/* pausa automatica quando fuori viewport */
+.r4lc[data-out="1"] .r4lc-track { animation-play-state: paused; }
+
+/* direzione */
+@keyframes r4lc-marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+.r4lc[data-dir="rtl"] .r4lc-track{ animation-name:r4lc-marquee-rtl; }
+@keyframes r4lc-marquee-rtl { from{transform:translateX(-50%)} to{transform:translateX(0)} }
+
+/* card logo */
+.r4lc-item{
+    /* NON usare width:auto come base: provoca stacking. */
+    /* flex-basis: px dal JS, altrimenti fallback percentuale */
+    flex:0 0 var(--r4lc-item-w-px, var(--r4lc-item-w-fallback));
+    height:var(--r4lc-item-h);
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    text-decoration:none;
+    opacity:.9;
+    filter:grayscale(100%) contrast(.85);
+    transition:filter .2s ease, opacity .2s ease, transform .2s ease;
+}
+.r4lc-item:hover{ filter:none; opacity:1; transform:scale(1.03); }
+
+/* immagine */
+.r4lc-img{
+    width:100%;
+    height:var(--r4lc-item-h);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+.r4lc-img img{
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+    display:block;
+}
+
+/* didascalia (opzionale) */
+.r4lc-caption{
+    font-size:12px;
+    line-height:1.2;
+    text-align:center;
+    color:#6c757d;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    padding:0 4px;
+}
+
+/* accessibilità motion */
+@media (prefers-reduced-motion: reduce){
+    .r4lc{ --r4lc-play: paused; }
+    .r4lc-track{ animation-duration:.001s; }
+}
+
+/* responsive */
+@media (max-width:768px){
+    .r4lc{ --r4lc-visible:4; --r4lc-height:64px; }
+}
+@media (max-width:480px){
+    .r4lc{ --r4lc-visible:3; --r4lc-height:56px; --r4lc-gap:16px; }
+}
