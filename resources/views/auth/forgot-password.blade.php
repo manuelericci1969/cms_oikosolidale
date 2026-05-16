@@ -1,7 +1,7 @@
 {{-- resources/views/auth/forgot-password.blade.php --}}
 <x-guest-layout>
     <x-slot name="title">
-        Recupero password | {{ config('app.name', 'R4Software') }}
+        Recupero password | {{ config('app.name', 'Oikos Solidale') }}
     </x-slot>
 
     <div class="mb-4">
