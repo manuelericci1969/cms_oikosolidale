@@ -27,12 +27,35 @@
         }
     }
 
+    function readStoredProjectData() {
+        const project = parseJson(readField(cfg.jsonFieldId));
+        return project && typeof project === 'object' ? project : {};
+    }
+
+    function getStoredCustomJs() {
+        const project = readStoredProjectData();
+        return String(project.r4v5CustomJs || window.R4EditorV5CustomJs || '').trim();
+    }
+
+    function setStoredCustomJs(value) {
+        window.R4EditorV5CustomJs = String(value || '').trim();
+    }
+
     function syncFields(editor) {
         if (!editor) return;
-        writeField(cfg.htmlFieldId, editor.getHtml());
+
+        const htmlWithPossibleScripts = editor.getHtml() || '';
+        const extracted = extractCustomJs(htmlWithPossibleScripts);
+        const customJs = String(extracted.js || getStoredCustomJs() || '').trim();
+        setStoredCustomJs(customJs);
+
+        writeField(cfg.htmlFieldId, extracted.html || htmlWithPossibleScripts);
         writeField(cfg.cssFieldId, editor.getCss());
+
         try {
-            writeField(cfg.jsonFieldId, JSON.stringify(editor.getProjectData()));
+            const project = editor.getProjectData();
+            project.r4v5CustomJs = customJs;
+            writeField(cfg.jsonFieldId, JSON.stringify(project));
         } catch (error) {
             console.warn('[R4 Editor V5] Sync JSON non riuscito', error);
         }
@@ -421,7 +444,7 @@
         return {
             html: stripDocumentWrappers(styles.html),
             css: [editor.getCss() || '', styles.css || ''].filter(Boolean).join('\n\n').trim(),
-            js: extracted.js
+            js: extracted.js || getStoredCustomJs()
         };
     }
 
@@ -440,6 +463,7 @@
         const rawJs = modal.querySelector('#r4v5CodeJs').value || '';
         const code = normalizeImportedCode(rawHtml, rawCss, rawJs);
 
+        setStoredCustomJs(code.js);
         editor.setComponents(composeHtmlWithJs(code.html, code.js));
         editor.setStyle(code.css);
         syncFields(editor);
@@ -473,7 +497,10 @@
 
         if (!clearJs.dataset.bound) {
             clearJs.dataset.bound = '1';
-            clearJs.addEventListener('click', function () { modal.querySelector('#r4v5CodeJs').value = ''; });
+            clearJs.addEventListener('click', function () {
+                setStoredCustomJs('');
+                modal.querySelector('#r4v5CodeJs').value = '';
+            });
         }
 
         modal.hidden = false;
@@ -512,6 +539,9 @@
         addRegistryBlocks(editor);
 
         const project = parseJson(readField(cfg.jsonFieldId));
+        const htmlCustomJs = extractCustomJs(readField(cfg.htmlFieldId)).js;
+        setStoredCustomJs((project && project.r4v5CustomJs) || htmlCustomJs || '');
+
         if (project && typeof project === 'object') {
             try {
                 editor.loadProjectData(project);
